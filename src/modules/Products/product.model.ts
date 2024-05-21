@@ -29,6 +29,10 @@ const productSchema = new Schema<TProduct>({
         type: String, 
         required: [true,'Name is required']
          },
+         productId: { 
+        type: String, 
+        
+         },
        description: { 
         type: String,
         required: [true,'Description is required']
@@ -54,6 +58,33 @@ const productSchema = new Schema<TProduct>({
         required: [true,'Inventory is required']
         }
 });
+
+
+// pre save middleware/hook: will work on create() & save()
+
+productSchema.pre('save',async function(next){
+   
+   const prod = this; //doc
+   prod.productId = prod._id.toString();
+ 
+   next();
+ })
+ 
+ 
+ // query middleware
+ 
+ productSchema.pre('find', function( next){
+  this.find({isDeleted: {$ne: true}}) 
+ // console.log(this);
+ next()
+ })
+ 
+ productSchema.pre('findOne', function( next){
+  this.find({isDeleted: {$ne: true}}) 
+ // console.log(this);
+ next()
+ })
+
 
 // creating a custom static method
 
