@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { ProductServices } from "./product.service"
-import { updateProduct as updateProductService } from "./product.service"
+import { updateProduct as updateProductDoc } from "./product.service"
 // create a product
 const createProduct = async (req: Request, res:Response)=>{
   
@@ -15,8 +15,8 @@ try{
 }catch(err: any){
     res.status(500).json({
         success: false,
-        message: "Could not create product!",
-        error: err.message,
+        message: err.message || "Could not create product!",
+        error: err,
       });
 }
 
@@ -47,7 +47,6 @@ const getAllProducts = async(req:Request, res: Response) =>{
 const getSingleProduct = async (req: Request, res: Response) => {
     try{
     const { productId } = req.params
-    
     const result = await ProductServices.getSingleProduct(productId)
 
     res.status(200).json({
@@ -59,8 +58,8 @@ const getSingleProduct = async (req: Request, res: Response) => {
      
       res.status(500).json({
         success: false,
-        message:err.message || 'Something went wrong',
-        error: err,
+        message: 'Failed to retrieve product',
+        error: err.message,
     })
     }
   };
@@ -70,21 +69,14 @@ export const updateProduct = async (req: Request, res: Response): Promise<void> 
   try {
     const { productId } = req.params;
     const updateData = req.body;
-
-    const result = await updateProductService(productId, updateData);
-
-    if (result) {
+    const result = await updateProductDoc(productId, updateData);
+  
       res.status(200).json({
         success: true,
         message: 'Product updated successfully!',
         data: result,
       });
-    } else {
-      res.status(404).json({
-        success: false,
-        message: 'Product not found',
-      });
-    }
+   
   } catch (err: any) {
     res.status(500).json({
       success: false,
@@ -94,9 +86,31 @@ export const updateProduct = async (req: Request, res: Response): Promise<void> 
   }
 };
 
+// Delete a product
+
+const deleteProduct = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { productId } = req.params;
+    const deletedProduct = await ProductServices.deleteProductDB(productId);
+    res.status(200).json({
+      success: true,
+      message: 'Product deleted successfully',
+      data: null,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Could not delete product',
+    });
+  }
+};
+
+
+
 export const ProductControllers = {
     createProduct,
     getAllProducts,
     getSingleProduct,
     updateProduct,
+    deleteProduct,
 }

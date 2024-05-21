@@ -1,5 +1,5 @@
-import { Schema, model } from "mongoose";
-import { ProductModel, TInventory, TProduct, TVariant } from "./product.interface";
+import { Model, Schema, model } from "mongoose";
+import {  ProductModel, TInventory, TProduct, TVariant } from "./product.interface";
 
 
 const variantSchema = new Schema<TVariant>({
@@ -24,7 +24,7 @@ const inventorySchema = new Schema<TInventory>({
          }
 });
 
-const productSchema = new Schema<TProduct>({
+const productSchema = new Schema<TProduct, ProductModel>({
         name: { 
         type: String, 
         required: [true,'Name is required']
@@ -71,25 +71,15 @@ productSchema.pre('save',async function(next){
  })
  
  
- // query middleware
- 
- productSchema.pre('find', function( next){
-  this.find({isDeleted: {$ne: true}}) 
- // console.log(this);
- next()
- })
- 
- productSchema.pre('findOne', function( next){
-  this.find({isDeleted: {$ne: true}}) 
- // console.log(this);
- next()
- })
 
-
-// creating a custom static method
-
-productSchema.statics.isProductExists = async function(id: string){
-   const existingProduct = await Product.findOne({id});
+// creating a static method
+productSchema.statics.isProductExists = async function (id:string) {
+   const existingProduct = await Product.findById(id)
    return existingProduct;
- }
+}
+
+
+
  export const Product = model<TProduct,ProductModel>("Product",productSchema);
+
+ 

@@ -2,29 +2,34 @@ import { UpdateQuery } from "mongoose";
 import { TProduct } from "./product.interface";
 import { Product } from "./product.model";
 
-const createProduct = async (params: TProduct) =>{
+const createProduct = async (productData: TProduct)=> {
 
-    //  custom static
+   
 
-  if (await Product.isProductExists(params.productId)){
-    throw new Error('product already exist')
-   }
-    const result = await Product.create(params)
-    return result;
-}
+    if (await Product.isProductExists(productData.productId)) {
+        throw new Error('Product already exists');
+      }
+      // create the product to database
+      const result = await Product.create(productData);
+      console.log(result);
+    
+      return result;
+  };
+
+
 const getAllProducts = async () =>{
     const result = await Product.find().select('-_id')
     return result;
 }
 
-const getSingleProduct = async (productId: string) => {
+const getSingleProduct = async (id: string) => {
     
-   const result = await Product.findOne({productId}).select('-_id')
+   const result = await Product.findById(id).select('-_id')
    console.log(result);
    return result
   }
 
-  export const updateProduct = async (productId: string, updateData: UpdateQuery<TProduct>): Promise<TProduct | null> => {
+   const updateProduct = async (productId: string, updateData: UpdateQuery<TProduct>): Promise<TProduct | null> => {
     const result = await Product.findOneAndUpdate(
       { productId },
       updateData,
@@ -34,9 +39,15 @@ const getSingleProduct = async (productId: string) => {
     return result;
   };
 
+  const deleteProductDB = async (id: string): Promise<TProduct | null> => {
+    const deletedProduct = await Product.findByIdAndDelete(id).exec()
+    return deletedProduct;
+  };
+
 export const ProductServices = {
     createProduct,
     getAllProducts,
     getSingleProduct,
-    updateProduct
+   updateProduct ,
+    deleteProductDB,
 }
