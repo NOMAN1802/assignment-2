@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { TInventory, TProduct, TVariant } from "./product.interface";
+import { ProductModel, TInventory, TProduct, TVariant } from "./product.interface";
 
 
 const variantSchema = new Schema<TVariant>({
@@ -55,4 +55,10 @@ const productSchema = new Schema<TProduct>({
         }
 });
 
- export const Product = model<TProduct>("Product",productSchema);
+// creating a custom static method
+
+productSchema.statics.isProductExists = async function(id: string){
+   const existingProduct = await Product.findOne({id});
+   return existingProduct;
+ }
+ export const Product = model<TProduct,ProductModel>("Product",productSchema);
