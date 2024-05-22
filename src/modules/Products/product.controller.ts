@@ -2,7 +2,6 @@ import { Request, Response } from "express"
 import { ProductServices } from "./product.service"
 import { TProduct } from "./product.interface";
 
-import { updateProductDB  } from "./product.service"
 import ProductZodSchema from "./product.validation";
 
 // create a product
@@ -29,20 +28,35 @@ try{
 
 };
 
-// get all products
+// get all products & search by name
 
-const getAllProducts = async(req:Request, res: Response) =>{
+const getProducts = async (req: Request, res: Response) => {
   try {
-    const { query } = req;
-    const result = await ProductServices.getAllProducts(query);
-    const isQueryEmpty = Object.keys(query).length === 0;
-    res.status(200).json({
-      success: true,
-      message: isQueryEmpty
-        ? "Products fetched successfully!"
-        : `Products matching search term '${Object.values(query)}' fetched successfully!`,
-      data: result,
-    });
+    const searchTerm = req.query.searchTerm as string | undefined;
+
+    if (searchTerm) {
+      // If the searchTerm query parameter is present, search products by name
+      const productData = await ProductServices.searchProductsByName(searchTerm);
+      const message = productData.length !== 0
+        ? `Products found successfully with name matching: ${searchTerm}`
+        : `No products found with name matching: ${searchTerm}`;
+
+      res.status(200).json({
+        success: true,
+        message,
+        data: productData,
+      });
+    } else {
+      // Otherwise, fetch all products
+      const productData = await ProductServices.getAllProducts();
+      const message = productData.length !== 0 ? "Products fetched successfully!" : "No products found.";
+
+      res.status(200).json({
+        success: true,
+        message,
+        data: productData,
+      });
+    }
   } catch (err: any) {
     res.status(500).json({
       success: false,
@@ -121,7 +135,7 @@ const deleteProduct = async (req: Request, res: Response): Promise<void> => {
     
 export const ProductControllers = {
     createProduct,
-    getAllProducts,
+    getProducts,
     getSingleProduct,
     updateProduct,
     deleteProduct,

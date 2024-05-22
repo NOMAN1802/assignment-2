@@ -1,4 +1,3 @@
-import { UpdateQuery } from "mongoose";
 import { QueryParams, TProduct } from "./product.interface";
 import { Product } from "./product.model";
 
@@ -17,19 +16,31 @@ const createProduct = async (productData: TProduct)=> {
   };
 
 
-const getAllProducts = async (query: QueryParams) =>{
+// const getAllProducts = async (query: QueryParams) =>{
 
-  try{
-    const searchOption: { [key: string]: any } = {};
-  if (query.name) {
-    searchOption.name = { $regex: query.name, $options: "i" };
-  }
-  const result = await Product.find(searchOption)
-  return result;
-  }catch(err: any){
-    throw new Error(err)
-  }
-}
+//   try{
+//     const searchOption: { [key: string]: any } = {};
+//   if (query.name) {
+//     searchOption.name = { $regex: query.name, $options: "i" };
+//   }
+//   const result = await Product.find(searchOption)
+//   return result;
+//   }catch(err: any){
+//     throw new Error(err)
+//   }
+// }
+
+const getAllProducts = async (): Promise<TProduct[]> => {
+  const products = await Product.find();
+  return products;
+};
+
+const searchProductsByName = async (searchTerm: string): Promise<TProduct[]> => {
+  const regex = new RegExp(searchTerm, 'i'); 
+  const products = await Product.find({ name: { $regex: regex } });
+  return products;
+};
+
 
 const getSingleProduct = async (id: string) => {  
    const result = await Product.findById(id);
@@ -56,6 +67,7 @@ const getSingleProduct = async (id: string) => {
 export const ProductServices = {
     createProduct,
     getAllProducts,
+    searchProductsByName,
     getSingleProduct,
     updateProductDB ,
    deleteProductDB,

@@ -1,6 +1,5 @@
-import { Model, Schema, model } from "mongoose";
-import {  ProductModel, TInventory, TProduct, TVariant } from "./product.interface";
-import { string } from "zod";
+import { Schema, model } from "mongoose";
+import {  TInventory, TProduct, TVariant } from "./product.interface";
 import slugify from "slugify";
 
 
@@ -26,7 +25,7 @@ const inventorySchema = new Schema<TInventory>({
          }
 });
 
-const productSchema = new Schema<TProduct, ProductModel>({
+const productSchema = new Schema<TProduct>({
         name: { 
         type: String, 
         required: [true,'Name is required']
@@ -75,6 +74,6 @@ productSchema.statics.isProductExists = async function (id:string) {
 
 
 
- export const Product = model<TProduct,ProductModel>("Product",productSchema);
+ export const Product = model<TProduct>("Product",productSchema);
 
  

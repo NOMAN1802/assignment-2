@@ -1,4 +1,4 @@
-import { Model } from "mongoose";
+// import { Model } from "mongoose";
 
 
 export type TVariant = {
@@ -22,11 +22,10 @@ export type TProduct = {
 };
 
 export type QueryParams = {
-    name?: string;
-    
+    name?: string; 
   };
 
 // for creating static 
-export interface ProductModel extends Model<TProduct>{
-    isProductExists(productId: string): Promise<TProduct | null>
-}
+// export interface ProductModel extends Model<TProduct>{
+//     isProductExists(productId: string): Promise<TProduct | null>
+// }
