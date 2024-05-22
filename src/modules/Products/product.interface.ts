@@ -13,7 +13,6 @@ export type TInventory = {
 
 export type TProduct = {
     name: string;
-    productId:string,
     description: string;
     price: number;
     category: string;
@@ -24,7 +23,7 @@ export type TProduct = {
 
 export type QueryParams = {
     name?: string;
-    category?: string; 
+    
   };
 
 // for creating static 

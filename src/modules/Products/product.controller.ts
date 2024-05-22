@@ -1,14 +1,16 @@
 import { Request, Response } from "express"
 import { ProductServices } from "./product.service"
-import { updateProduct as updateProductDoc } from "./product.service"
+import { TProduct } from "./product.interface";
+
+import { updateProductDB  } from "./product.service"
 import ProductZodSchema from "./product.validation";
+
 // create a product
 const createProduct = async (req: Request, res:Response)=>{
   
 try{
-    const productData = req.body
+    const productData:TProduct = req.body;
     // Validation using Zod
-
     const zodParsedData = ProductZodSchema.parse(productData);
 
     const result = await ProductServices.createProduct(zodParsedData)
@@ -54,7 +56,7 @@ const getAllProducts = async(req:Request, res: Response) =>{
 
 const getSingleProduct = async (req: Request, res: Response) => {
     try{
-    const { productId } = req.params
+    const { productId } = req.params;
     const result = await ProductServices.getSingleProduct(productId)
 
     res.status(200).json({
@@ -66,18 +68,21 @@ const getSingleProduct = async (req: Request, res: Response) => {
      
       res.status(500).json({
         success: false,
-        message: 'Failed to retrieve product',
+        message: err.message ||'Failed to retrieve product',
         error: err.message,
-    })
+    });
     }
   };
+
 // Update a product by id
 
-export const updateProduct = async (req: Request, res: Response): Promise<void> => {
+ const updateProduct = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
     const updateData = req.body;
-    const result = await updateProductDoc(productId, updateData);
+
+    const zodParsedData = ProductZodSchema.parse(updateData);
+    const result = await ProductServices.updateProductDB(productId, zodParsedData);
   
       res.status(200).json({
         success: true,

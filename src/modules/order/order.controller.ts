@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { TOrder } from "./order.interface";
 import { OrderServices } from "./order.service";
-import { Product as ProductModel } from "../Products/product.model";
+import { Product  } from "../Products/product.model";
 import OrderZodSchema from "./order.validation";
 
 const createOrder = async (req: Request, res: Response) => {
@@ -9,7 +9,7 @@ const createOrder = async (req: Request, res: Response) => {
     const orderData: TOrder = req.body;
     // Validation using Zod
     const zodParsedData = OrderZodSchema.parse(orderData);
-    const product = await ProductModel.findById(zodParsedData.productId);
+    const product = await Product.findById(zodParsedData.productId);
     if (!product) {
       return res.status(404).json({
         success: false,
@@ -37,14 +37,11 @@ const createOrder = async (req: Request, res: Response) => {
   } catch (error: any) {
     return res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message:error.massage || "Something went wrong",
       error: error,
     });
   }
 };
-
-
-
 
 export const OrderController = {
   createOrder,

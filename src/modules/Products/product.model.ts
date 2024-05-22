@@ -1,5 +1,7 @@
 import { Model, Schema, model } from "mongoose";
 import {  ProductModel, TInventory, TProduct, TVariant } from "./product.interface";
+import { string } from "zod";
+import slugify from "slugify";
 
 
 const variantSchema = new Schema<TVariant>({
@@ -29,10 +31,6 @@ const productSchema = new Schema<TProduct, ProductModel>({
         type: String, 
         required: [true,'Name is required']
          },
-         productId: { 
-        type: String, 
-        
-         },
        description: { 
         type: String,
         required: [true,'Description is required']
@@ -61,16 +59,13 @@ const productSchema = new Schema<TProduct, ProductModel>({
 
 
 // pre save middleware/hook: will work on create() & save()
-
-productSchema.pre('save',async function(next){
-   
-   const prod = this; //doc
-   prod.productId = prod._id.toString();
- 
+productSchema.pre('save',async function(next){ 
+   const slug = slugify(`${this.description}-${this.price}}`, {
+      lower: true,
+      });
+      return slug;
    next();
  })
- 
- 
 
 // creating a static method
 productSchema.statics.isProductExists = async function (id:string) {
