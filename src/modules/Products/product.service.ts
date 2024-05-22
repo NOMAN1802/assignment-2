@@ -1,12 +1,10 @@
 import { UpdateQuery } from "mongoose";
-import { TProduct } from "./product.interface";
+import { QueryParams, TProduct } from "./product.interface";
 import { Product } from "./product.model";
 
 const createProduct = async (productData: TProduct)=> {
 
-   
-
-    if (await Product.isProductExists(productData.productId)) {
+     if (await Product.isProductExists(productData.productId)) {
         throw new Error('Product already exists');
       }
       // create the product to database
@@ -17,13 +15,24 @@ const createProduct = async (productData: TProduct)=> {
   };
 
 
-const getAllProducts = async () =>{
-    const result = await Product.find().select('-_id')
-    return result;
+const getAllProducts = async (query: QueryParams) =>{
+
+  try{
+    const searchOption: { [key: string]: any } = {};
+  if (query.name) {
+    searchOption.name = { $regex: query.name, $options: "i" };
+  }
+  if (query.category) {
+    searchOption.category = { $regex: query.category, $options: "i" };
+  }
+  const result = await Product.find(searchOption)
+  return result;
+  }catch(err: any){
+    throw new Error(err)
+  }
 }
 
-const getSingleProduct = async (id: string) => {
-    
+const getSingleProduct = async (id: string) => {  
    const result = await Product.findById(id).select('-_id')
    console.log(result);
    return result
@@ -48,6 +57,6 @@ export const ProductServices = {
     createProduct,
     getAllProducts,
     getSingleProduct,
-   updateProduct ,
-    deleteProductDB,
+    updateProduct ,
+   deleteProductDB,
 }

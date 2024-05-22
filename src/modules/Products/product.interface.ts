@@ -22,6 +22,11 @@ export type TProduct = {
     inventory: TInventory;
 };
 
+export type QueryParams = {
+    name?: string;
+    category?: string; 
+  };
+
 // for creating static 
 export interface ProductModel extends Model<TProduct>{
     isProductExists(productId: string): Promise<TProduct | null>

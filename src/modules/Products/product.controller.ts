@@ -25,21 +25,24 @@ try{
 // get all products
 
 const getAllProducts = async(req:Request, res: Response) =>{
-   try{
-    
-    const result = await ProductServices.getAllProducts();
-    res.json({
-        success: true,
-        message: "Products fetched successfully!",
-        data: result,
+  try {
+    const { query } = req;
+    const result = await ProductServices.getAllProducts(query);
+    const isQueryEmpty = Object.keys(query).length === 0;
+    res.status(200).json({
+      success: true,
+      message: isQueryEmpty
+        ? "Products fetched successfully!"
+        : `Products matching search term '${Object.values(query)}' fetched successfully!`,
+      data: result,
     });
-   }catch(err: any){
+  } catch (err: any) {
     res.status(500).json({
-        success: false,
-        message: "Could not fetch products!",
-        error: err,
-      });
-   }
+      success: false,
+      message: err.message || "Something went wrong",
+      error: err,
+    });
+  }
 };
 
 // Get a single product by id
@@ -105,12 +108,12 @@ const deleteProduct = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-
-
+    
 export const ProductControllers = {
     createProduct,
     getAllProducts,
     getSingleProduct,
     updateProduct,
     deleteProduct,
+    
 }
