@@ -34,7 +34,6 @@ const getAllProducts = async (query: QueryParams) =>{
 
 const getSingleProduct = async (id: string) => {  
    const result = await Product.findById(id).select('-_id')
-   console.log(result);
    return result
   }
 
@@ -44,7 +43,6 @@ const getSingleProduct = async (id: string) => {
       updateData,
       { new: true, fields: { _id: 0 } }  
     ).exec();
-    console.log(result);
     return result;
   };
 
