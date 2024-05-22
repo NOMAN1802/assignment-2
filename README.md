@@ -16,10 +16,7 @@
  **Process**
   ------------------------------------------------------------------------
   
- **Clone The project with this link**
- 
- https://github.com/NOMAN1802/assignment-2.git
-
+ **Clone The project with link**
  
  **Then run command npm i or yern add in your terminal*
 
