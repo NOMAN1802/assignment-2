@@ -18,10 +18,10 @@ try{
         message: "Product created successfully!",
         data: result,
     });
-}catch(err: any){
+}catch(err){
     res.status(500).json({
         success: false,
-        message: err.message || "Could not create product!",
+        message:  "Could not create product!",
         error: err,
       });
 }
@@ -57,10 +57,10 @@ const getProducts = async (req: Request, res: Response) => {
         data: productData,
       });
     }
-  } catch (err: any) {
+  } catch (err) {
     res.status(500).json({
       success: false,
-      message: err.message || "Something went wrong",
+      message: "Something went wrong",
       error: err,
     });
   }
@@ -78,12 +78,12 @@ const getSingleProduct = async (req: Request, res: Response) => {
       message: 'Product is retrieved successfully',
       data: result,
     })
-    }catch(err: any){
+    }catch(err){
      
       res.status(500).json({
         success: false,
-        message: err.message ||'Failed to retrieve product',
-        error: err.message,
+        message:  'Failed to retrieve product',
+        error: err,
     });
     }
   };
@@ -104,10 +104,10 @@ const getSingleProduct = async (req: Request, res: Response) => {
         data: result,
       });
    
-  } catch (err: any) {
+  } catch (err) {
     res.status(500).json({
       success: false,
-      message: err.message || 'Something went wrong',
+      message: err || 'Something went wrong',
       error: err,
     });
   }
@@ -119,15 +119,16 @@ const deleteProduct = async (req: Request, res: Response): Promise<void> => {
   try {
     const { productId } = req.params;
     const deletedProduct = await ProductServices.deleteProductDB(productId);
+    console.log(deletedProduct);
     res.status(200).json({
       success: true,
       message: 'Product deleted successfully',
-      data: null,
+      data: null ,
     });
-  } catch (error: any) {
+  } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message || 'Could not delete product',
+      message: error|| 'Could not delete product',
     });
   }
 };

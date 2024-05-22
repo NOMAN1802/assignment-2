@@ -35,10 +35,10 @@ const createOrder = async (req: Request, res: Response) => {
       message: "Order created successfully!",
       data: result,
     });
-  } catch (error: any) {
+  } catch (error) {
     return res.status(500).json({
       success: false,
-      message:error.massage || "Something went wrong",
+      message: "Something went wrong",
       error: error,
     });
   }
@@ -71,10 +71,10 @@ const getOrders = async (req: Request, res: Response): Promise<void> => {
         data: orderData,
       });
     }
-  } catch (err: any) {
+  } catch (err) {
     res.status(500).json({
       success: false,
-      message: err.message || "Something went wrong",
+      message: "Something went wrong",
       error: err,
     });
   }

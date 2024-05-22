@@ -1,4 +1,4 @@
-import { QueryParams, TProduct } from "./product.interface";
+import { TProduct } from "./product.interface";
 import { Product } from "./product.model";
 
 
@@ -16,19 +16,6 @@ const createProduct = async (productData: TProduct)=> {
   };
 
 
-// const getAllProducts = async (query: QueryParams) =>{
-
-//   try{
-//     const searchOption: { [key: string]: any } = {};
-//   if (query.name) {
-//     searchOption.name = { $regex: query.name, $options: "i" };
-//   }
-//   const result = await Product.find(searchOption)
-//   return result;
-//   }catch(err: any){
-//     throw new Error(err)
-//   }
-// }
 
 const getAllProducts = async (): Promise<TProduct[]> => {
   const products = await Product.find();
